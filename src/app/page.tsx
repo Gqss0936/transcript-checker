@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import FileUpload from "@/components/FileUpload";
 
 export default function HomePage() {

@@ -2,10 +2,13 @@
 'use client';
 
 import { useState } from 'react';
+import ResultDisplay from './ResultDisplay';
+import { mockResult } from '@/lib/mockData';
 
 export default function FileUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showResult, setShowResult] = useState(false); // 🆕 State สำหรับแสดงผล
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -43,15 +46,26 @@ export default function FileUpload() {
 
   const handleContinue = () => {
     if (file) {
-      console.log('Uploading file:', file.name);
-      alert(`กำลังประมวลผล: ${file.name}`);
+      console.log('Processing file:', file.name);
+      // 🎯 แสดงผลลัพธ์ (ใช้ mock data ก่อน)
+      setShowResult(true);
     }
   };
 
+  const handleReset = () => {
+    setFile(null);
+    setShowResult(false);
+  };
+
+  // 🎯 ถ้าแสดงผลแล้ว → แสดง ResultDisplay
+  if (showResult) {
+    return <ResultDisplay result={mockResult} onReset={handleReset} />;
+  }
+
+  // 🎯 ถ้าไม่แสดงผล → แสดง Upload UI
   return (
     <div>
       {!file ? (
-        // ✨ Upload Box - ขนาดพอดี สวยงาม
         <div
           className={`
             relative border-2 border-dashed rounded-xl
@@ -77,14 +91,12 @@ export default function FileUpload() {
             htmlFor="file-upload" 
             className="flex flex-col items-center justify-center py-16 px-6 cursor-pointer"
           >
-            {/* Icon */}
             <div className="mb-4 text-slate-400 transition-colors group-hover:text-slate-500">
               <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
 
-            {/* Text */}
             <div className="text-center space-y-2">
               <div className="text-slate-900 font-medium text-lg">
                 Upload Transcript
@@ -99,20 +111,14 @@ export default function FileUpload() {
           </label>
         </div>
       ) : (
-        // ✨ File Preview - Clean และกะทัดรัด
         <div className="space-y-4">
-          
-          {/* File Info Card */}
           <div className="flex items-center gap-4 p-5 bg-slate-50 border border-slate-200 rounded-xl">
-            
-            {/* PDF Icon */}
             <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
               </svg>
             </div>
 
-            {/* File Details */}
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-slate-900 truncate">
                 {file.name}
@@ -122,7 +128,6 @@ export default function FileUpload() {
               </div>
             </div>
 
-            {/* Remove Button */}
             <button
               onClick={handleCancel}
               className="flex-shrink-0 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -134,7 +139,6 @@ export default function FileUpload() {
             </button>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3">
             <button
               onClick={handleCancel}
